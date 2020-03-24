@@ -3,6 +3,8 @@ package com.thoughtworks;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,27 @@ public class StudentRepository {
 
   public List<Student> query() {
     // TODO:
-    return new ArrayList<>();
+    Connection conn = DbUtil.getConnection();
+    List<Student> result = new ArrayList<>();
+    String sql = "SELECT id,name,gender,admission_year,birthday,class_id FROM student";
+    try {
+      Statement stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(sql);
+      Student student = null;
+      while (rs.next()) {
+        student = new Student();
+        student.setId(rs.getString("id"));
+        student.setName(rs.getString("name"));
+        student.setGender(rs.getString("gender"));
+        student.setAdmissionYear(rs.getInt("admission_year"));
+        student.setBirthday(rs.getDate("birthday"));
+        student.setClassId(rs.getString("class_id"));
+        result.add(student);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return result;
   }
 
   public List<Student> queryByClassId(String classId) {
