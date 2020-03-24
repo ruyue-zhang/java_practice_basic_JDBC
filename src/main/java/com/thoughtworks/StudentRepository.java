@@ -59,7 +59,29 @@ public class StudentRepository {
 
   public List<Student> queryByClassId(String classId) {
     // TODO:
-    return new ArrayList<>();
+    Connection conn = DbUtil.getConnection();
+    List<Student> result = new ArrayList<>();
+    String sql = "SELECT id,name,gender,admission_year,birthday,class_id FROM student where class_id = ? ORDER BY id DESC";
+    try {
+      PreparedStatement ptmt = conn.prepareStatement(sql);
+      ptmt.setString(1,classId);
+      ResultSet rs = ptmt.executeQuery();
+
+      Student student = null;
+      while (rs.next()) {
+        student = new Student();
+        student.setId(rs.getString("id"));
+        student.setName(rs.getString("name"));
+        student.setGender(rs.getString("gender"));
+        student.setAdmissionYear(rs.getInt("admission_year"));
+        student.setBirthday(rs.getDate("birthday"));
+        student.setClassId(rs.getString("class_id"));
+        result.add(student);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return result;
   }
 
   public void update(String id, Student student) {
