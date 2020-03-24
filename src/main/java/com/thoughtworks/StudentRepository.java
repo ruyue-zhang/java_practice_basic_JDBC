@@ -107,5 +107,14 @@ public class StudentRepository {
 
   public void delete(String id) {
     // TODO:
+    Connection conn = DbUtil.getConnection();
+    String sql = "DELETE FROM student WHERE id = ?";
+    try {
+      PreparedStatement ptmt = conn.prepareStatement(sql);
+      ptmt.setString(1, id);
+      ptmt.execute();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
